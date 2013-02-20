@@ -124,7 +124,9 @@ public class Settings extends PreferenceActivity
             R.id.about_settings,
             R.id.accessibility_settings,
             R.id.interface_section,
-            R.id.launcher_settings
+            R.id.launcher_settings,
+            R.id.lock_screen_settings,
+            R.id.system_settings
     };
 
     private SharedPreferences mDevelopmentPreferences;
@@ -397,7 +399,11 @@ public class Settings extends PreferenceActivity
                 VpnSettings.class.getName().equals(fragmentName) ||
                 SecuritySettings.class.getName().equals(fragmentName) ||
                 InstalledAppDetails.class.getName().equals(fragmentName) ||
-                ChooseLockGenericFragment.class.getName().equals(fragmentName)) {
+                ChooseLockGenericFragment.class.getName().equals(fragmentName) ||
+                TetherSettings.class.getName().equals(fragmentName) ||
+                ApnSettings.class.getName().equals(fragmentName) ||
+                LocationSettings.class.getName().equals(fragmentName) ||
+                ZonePicker.class.getName().equals(fragmentName)) {
             intent.putExtra(EXTRA_CLEAR_UI_OPTIONS, true);
         }
 
@@ -868,4 +874,6 @@ public class Settings extends PreferenceActivity
     public static class ApnSettingsActivity extends Settings { /* empty */ }
     public static class ApnEditorActivity extends Settings { /* empty */ }
     public static class ProfilesSettingsActivity extends Settings { /* empty */ }
+    public static class QuietHoursSettingsActivity extends Settings { /* empty */ }
+    public static class DreamSettingsActivity extends Settings { /* empty */ }
 }

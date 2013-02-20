@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
+ * Portions Copyright (C) 2013 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +50,7 @@ import android.os.ServiceManager;
 import android.os.StrictMode;
 import android.os.SystemProperties;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.MultiCheckPreference;
@@ -146,6 +148,8 @@ public class DevelopmentSettings extends PreferenceFragment
 
     private static final String DEVELOPMENT_TOOLS = "development_tools";
 
+    private static final String ADVANCED_REBOOT_KEY = "advanced_reboot";
+
     private static final int RESULT_DEBUG_APP = 1000;
 
     private IWindowManager mWindowManager;
@@ -202,6 +206,8 @@ public class DevelopmentSettings extends PreferenceFragment
     private Object mSelectedRootValue;
     private PreferenceScreen mDevelopmentTools;
 
+    private CheckBoxPreference mAdvancedReboot;
+
     private final ArrayList<Preference> mAllPrefs = new ArrayList<Preference>();
     private final ArrayList<CheckBoxPreference> mResetCbPrefs
             = new ArrayList<CheckBoxPreference>();
@@ -236,6 +242,13 @@ public class DevelopmentSettings extends PreferenceFragment
         mAllowMockLocation = findAndInitCheckboxPref(ALLOW_MOCK_LOCATION);
         mPassword = (PreferenceScreen) findPreference(LOCAL_BACKUP_PASSWORD);
         mAllPrefs.add(mPassword);
+        mAdvancedReboot = findAndInitCheckboxPref(ADVANCED_REBOOT_KEY);
+
+        if (!android.os.Process.myUserHandle().equals(UserHandle.OWNER)) {
+            disableForUser(mEnableAdb);
+            disableForUser(mPassword);
+            disableForUser(mAdvancedReboot);
+        }
 
         mDebugAppPref = findPreference(DEBUG_APP_KEY);
         mAllPrefs.add(mDebugAppPref);
@@ -319,6 +332,13 @@ public class DevelopmentSettings extends PreferenceFragment
         mAllPrefs.add(mDevelopmentTools);
     }
 
+    private void disableForUser(Preference pref) {
+        if (pref != null) {
+            pref.setEnabled(false);
+            mDisabledPrefs.add(pref);
+        }
+    }
+
     private CheckBoxPreference findAndInitCheckboxPref(String key) {
         CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
         if (pref == null) {
@@ -350,7 +370,7 @@ public class DevelopmentSettings extends PreferenceFragment
 
         final int padding = activity.getResources().getDimensionPixelSize(
                 R.dimen.action_bar_switch_padding);
-        mEnabledSwitch.setPadding(0, 0, padding, 0);
+        mEnabledSwitch.setPaddingRelative(0, 0, padding, 0);
         mEnabledSwitch.setOnCheckedChangeListener(this);
     }
 
@@ -474,6 +494,23 @@ public class DevelopmentSettings extends PreferenceFragment
         updateVerifyAppsOverUsbOptions();
         updateBugreportOptions();
         updateRootAccessOptions();
+        updateAdvancedRebootOptions();
+    }
+
+    private void resetAdvancedRebootOptions() {
+        Settings.Secure.putInt(getActivity().getContentResolver(),
+                Settings.Secure.ADVANCED_REBOOT, 0);
+    }
+
+    private void writeAdvancedRebootOptions() {
+        Settings.Secure.putInt(getActivity().getContentResolver(),
+                Settings.Secure.ADVANCED_REBOOT,
+                mAdvancedReboot.isChecked() ? 1 : 0);
+    }
+
+    private void updateAdvancedRebootOptions() {
+        mAdvancedReboot.setChecked(Settings.Secure.getInt(getActivity().getContentResolver(),
+                Settings.Secure.ADVANCED_REBOOT, 0) != 0);
     }
 
     private void updateAdbOverNetwork() {
@@ -515,6 +552,7 @@ public class DevelopmentSettings extends PreferenceFragment
         }
         resetDebuggerOptions();
         resetRootAccessOptions();
+        resetAdvancedRebootOptions();
         writeAnimationScaleOption(0, mWindowAnimationScale, null);
         writeAnimationScaleOption(1, mTransitionAnimationScale, null);
         writeAnimationScaleOption(2, mAnimatorDurationScale, null);
@@ -590,7 +628,7 @@ public class DevelopmentSettings extends PreferenceFragment
         mKillAppLongpressBack.setChecked(Settings.Secure.getInt(
             getActivity().getContentResolver(), Settings.Secure.KILL_APP_LONGPRESS_BACK, 0) != 0);
     }
-        
+
     private void updatePasswordSummary() {
         try {
             if (mBackupManager.hasBackupPassword()) {
@@ -1098,6 +1136,11 @@ public class DevelopmentSettings extends PreferenceFragment
                             Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
                     mLastEnabledState = isChecked;
                     setPrefsEnabledState(mLastEnabledState);
+
+                    // Hide development settings from the Settings menu (Android 4.2 behaviour)
+                    getActivity().getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE).edit()
+                        .putBoolean(PREF_SHOW, false)
+                        .apply();
                 }
             }
         }
@@ -1223,6 +1266,8 @@ public class DevelopmentSettings extends PreferenceFragment
             writeDebugLayoutOptions();
         } else if (preference == mKillAppLongpressBack) {
             writeKillAppLongpressBackOptions();
+        } else if (preference == mAdvancedReboot) {
+            writeAdvancedRebootOptions();
         }
 
         return false;
@@ -1320,8 +1365,14 @@ public class DevelopmentSettings extends PreferenceFragment
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 1);
                 mLastEnabledState = true;
                 setPrefsEnabledState(mLastEnabledState);
-            }
 
+                // Make sure the development settings is visible in the main Settings menu
+                // This is needed since we may have just turned off dev settings and want to
+                // turn it on again
+                getActivity().getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE).edit()
+                    .putBoolean(PREF_SHOW, true)
+                    .apply();
+            }
         } else if (dialog == mRootDialog) {
             if (which == DialogInterface.BUTTON_POSITIVE) {
                 writeRootAccessOptions(mSelectedRootValue);
