@@ -76,6 +76,27 @@
         <!-- Do not translate. -->
         <item>1800000</item>
     </string-array>
+	
+    <string-array name="button_backlight_entries">
+        <item>Auto</item>
+        <item>Off</item>
+        <item>On</item>
+        <item>Force off</item>
+        <item>Force on</item>
+    </string-array>
+
+    <string-array name="button_backlight_values" translatable="false">
+        <!-- Do not translate. -->
+        <item>0</item>
+        <!-- Do not translate. -->
+        <item>1</item>
+        <!-- Do not translate. -->
+        <item>2</item>
+        <!-- Do not translate. -->
+        <item>3</item>
+        <!-- Do not translate. -->
+        <item>4</item>
+    </string-array>
     
     <!-- Display settings.  The delay in inactivity before the dream is shown. These are shown in a list dialog. -->
     <string-array name="dream_timeout_entries">
@@ -772,4 +793,14 @@
         <!-- Always allow app to send to premium SMS short code. -->
         <item>Always allow</item>
     </string-array>
+	
+    <string-array name="entries_halo_state">
+        <item>@string/halo_state_black</item>
+        <item>@string/halo_state_white</item>
+    </string-array>
+
+    <string-array name="values_halo_state" translatable="false">
+        <item>1</item>
+        <item>0</item>
+    </string-array>	
 </resources>
