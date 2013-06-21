@@ -1383,9 +1383,9 @@ public class InstalledAppDetails extends Fragment
                 showDialogInner(DLG_DISABLE_NOTIFICATIONS, 0);
             } else {
                 setNotificationsEnabled(true);
+            }
         } else if (buttonView == mHaloState) {
             setHaloState(isChecked);				
-            }
         }
     }
 }

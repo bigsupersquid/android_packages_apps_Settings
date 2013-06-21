@@ -43,8 +43,6 @@ public class SystemSettings extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener {
     private static final String TAG = "SystemSettings";
 	
-    // If there is not setting in the provider, use this
-    private static final int FALLBACK_BUTTON_BACKLIGHT_VALUE = 0;
 
     private static final String KEY_HALO_STATE = "halo_state"; 
     private static final String KEY_HALO_HIDE = "halo_hide"; 
@@ -52,7 +50,6 @@ public class SystemSettings extends SettingsPreferenceFragment implements
     private static final String KEY_HALO_PAUSE = "halo_pause"; 
     private static final String KEY_NOTIFICATION_PULSE = "notification_pulse";
     private static final String KEY_BATTERY_LIGHT = "battery_light";
-    private static final String KEY_BUTTON_BACKLIGHT = "button_backlight_mode";
     private static final String KEY_HARDWARE_KEYS = "hardware_keys";
     private static final String KEY_NAVIGATION_BAR = "navigation_bar";
     private static final String KEY_SHOW_NAVBAR = "show_navbar";
@@ -69,7 +66,6 @@ public class SystemSettings extends SettingsPreferenceFragment implements
 
     private PreferenceScreen mNotificationPulse;
     private PreferenceScreen mBatteryPulse;
-    private ListPreference mButtonBacklightPref;
     private CheckBoxPreference mShowNavbar;
     private PreferenceScreen mPieControl;
     private ListPreference mHaloState; 
@@ -141,23 +137,12 @@ public class SystemSettings extends SettingsPreferenceFragment implements
             prefScreen.removePreference(findPreference(KEY_NOTIFICATION_DRAWER));
         }
 
-        // Button lights. Per user.
-        if (removeKeys) {
-            prefScreen.removePreference(findPreference(KEY_BUTTON_BACKLIGHT));
-        } else {
-            mButtonBacklightPref = (ListPreference) findPreference(KEY_BUTTON_BACKLIGHT);
-            final int currentButtonBacklight = Settings.System.getInt(getContentResolver(),
-                    Settings.System.BUTTON_BACKLIGHT_MODE, FALLBACK_BUTTON_BACKLIGHT_VALUE);
-            mButtonBacklightPref.setValueIndex(currentButtonBacklight);
-            mButtonBacklightPref.setOnPreferenceChangeListener(this);
-            updateButtonBacklight(currentButtonBacklight);
-        }		
+		
         // Preferences that applies to all users
         // Notification lights
         mNotificationPulse = (PreferenceScreen) findPreference(KEY_NOTIFICATION_PULSE);
         if (mNotificationPulse != null) {
-            if (!getResources().getBoolean(
-                    com.android.internal.R.bool.config_intrusiveNotificationLed)) {
+            if (!getResources().getBoolean(com.android.internal.R.bool.config_intrusiveNotificationLed)) {
                 prefScreen.removePreference(mNotificationPulse);
                 mNotificationPulse = null;
             }
@@ -251,10 +236,6 @@ public class SystemSettings extends SettingsPreferenceFragment implements
             boolean value = (Boolean) objValue;
             updateExpandedDesktop(value ? 2 : 0);
             return true;
-        } else if (preference == mButtonBacklightPref) {
-            int value = Integer.parseInt((String) objValue);
-            updateButtonBacklight(value);
-            return true;
         } else if (preference == mHaloHide) { 
             boolean value = (Boolean) objValue; 
             Settings.System.putInt(getContentResolver(), 
@@ -333,11 +314,6 @@ public class SystemSettings extends SettingsPreferenceFragment implements
         }
     }
 
-    private void updateButtonBacklight(int value) {
-        mButtonBacklightPref.setSummary(mButtonBacklightPref.getEntries()[value]);
-        Settings.System.putInt(getContentResolver(),
-                Settings.System.BUTTON_BACKLIGHT_MODE, value);
-    }	
 	
     private void updateExpandedDesktop(int value) {
         ContentResolver cr = getContentResolver();

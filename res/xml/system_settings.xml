@@ -76,13 +76,6 @@
         android:key="notification_pulse"
         android:title="@string/notification_pulse_title"
         android:fragment="com.android.settings.notificationlight.NotificationLightSettings" />
-		
-   <ListPreference
-        android:key="button_backlight_mode"
-        android:title="@string/button_backlight_mode"
-        android:persistent="true"
-        android:entries="@array/button_backlight_entries"
-        android:entryValues="@array/button_backlight_values" />		
 
     <PreferenceScreen
         android:key="battery_light"
