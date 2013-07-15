@@ -141,12 +141,7 @@ public class InstalledAppDetails extends Fragment
     private Button mForceStopButton;
     private Button mClearDataButton;
     private Button mMoveAppButton;
-<<<<<<< HEAD
 	private CompoundButton mNotificationSwitch, mHaloState;
-=======
-    private CompoundButton mNotificationSwitch;
-    private CompoundButton mPrivacyGuardSwitch;
->>>>>>> 05e006d64a8d89b9227711ddb48948d726a07f4e
 
     private PackageMoveObserver mPackageMoveObserver;
 
@@ -1461,17 +1456,8 @@ public class InstalledAppDetails extends Fragment
             } else {
                 setNotificationsEnabled(true);
             }
-<<<<<<< HEAD
         } else if (buttonView == mHaloState) {
             setHaloState(isChecked);				
-=======
-        } else if (buttonView == mPrivacyGuardSwitch) {
-            if (isChecked) {
-                showDialogInner(DLG_PRIVACY_GUARD, 0);
-            } else {
-                setPrivacyGuard(false);
-            }
->>>>>>> 05e006d64a8d89b9227711ddb48948d726a07f4e
         }
     }
 }
