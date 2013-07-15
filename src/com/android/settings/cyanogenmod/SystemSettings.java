@@ -29,6 +29,7 @@ import android.os.UserHandle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.CheckBoxPreference;
 import android.provider.Settings;
@@ -55,6 +56,7 @@ public class SystemSettings extends SettingsPreferenceFragment implements
     private static final String KEY_SHOW_NAVBAR = "show_navbar";
     private static final String KEY_NAVIGATION_RING = "navigation_ring";
     private static final String KEY_NAVIGATION_BAR_CATEGORY = "navigation_bar_category";
+    private static final String KEY_NAVIGATION_HEIGHT = "nav_buttons_height";
     private static final String KEY_LOCK_CLOCK = "lock_clock";
     private static final String KEY_STATUS_BAR = "status_bar";
     private static final String KEY_QUICK_SETTINGS = "quick_settings_panel";
@@ -66,6 +68,7 @@ public class SystemSettings extends SettingsPreferenceFragment implements
 
     private PreferenceScreen mNotificationPulse;
     private PreferenceScreen mBatteryPulse;
+    private ListPreference mNavButtonsHeight;
     private CheckBoxPreference mShowNavbar;
     private PreferenceScreen mPieControl;
     private ListPreference mHaloState; 
@@ -102,12 +105,21 @@ public class SystemSettings extends SettingsPreferenceFragment implements
                 }
             }
 
-            // Show navbar
-            mShowNavbar = (CheckBoxPreference) findPreference(KEY_SHOW_NAVBAR);
-            mShowNavbar.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
-                    SystemSettings.KEY_SHOW_NAVBAR, 0) == 1);
+        // Show navbar
+        mShowNavbar = (CheckBoxPreference) findPreference(KEY_SHOW_NAVBAR);
+        mShowNavbar.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
+            SystemSettings.KEY_SHOW_NAVBAR, 0) == 1);
 
-            IWindowManager windowManager = IWindowManager.Stub.asInterface(
+        // Navbar height
+        mNavButtonsHeight = (ListPreference) findPreference(KEY_NAVIGATION_HEIGHT);
+            mNavButtonsHeight.setOnPreferenceChangeListener(this);
+			
+            int statusNavButtonsHeight = Settings.System.getInt(getActivity().getApplicationContext().getContentResolver(),
+                Settings.System.NAV_BUTTONS_HEIGHT, 48);
+            mNavButtonsHeight.setValue(String.valueOf(statusNavButtonsHeight));
+            mNavButtonsHeight.setSummary(mNavButtonsHeight.getEntry());
+
+	            IWindowManager windowManager = IWindowManager.Stub.asInterface(
                     ServiceManager.getService(Context.WINDOW_SERVICE));
             try {
                 if (!windowManager.hasNavigationBar()) {
@@ -115,28 +127,28 @@ public class SystemSettings extends SettingsPreferenceFragment implements
                 }
             } catch (RemoteException e) {
                 // Do nothing
-            }
+            }		
 
             // Act on the above
             if (removeNavbar) {
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR));
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_RING));
+                prefScreen.removePreference(findPreference(KEY_NAVIGATION_HEIGHT));
                 prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_CATEGORY));
             }
         } else {
-            // Secondary user is logged in, remove all primary user specific
-            // preferences
+            // Secondary user is logged in, remove all primary user specific preferences
             prefScreen.removePreference(findPreference(KEY_BATTERY_LIGHT));
             prefScreen.removePreference(findPreference(KEY_HARDWARE_KEYS));
             prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR));
             prefScreen.removePreference(findPreference(KEY_NAVIGATION_RING));
+            prefScreen.removePreference(findPreference(KEY_NAVIGATION_HEIGHT));
             prefScreen.removePreference(findPreference(KEY_NAVIGATION_BAR_CATEGORY));
             prefScreen.removePreference(findPreference(KEY_STATUS_BAR));
             prefScreen.removePreference(findPreference(KEY_QUICK_SETTINGS));
             prefScreen.removePreference(findPreference(KEY_POWER_MENU));
             prefScreen.removePreference(findPreference(KEY_NOTIFICATION_DRAWER));
         }
-
 		
         // Preferences that applies to all users
         // Notification lights
@@ -262,6 +274,13 @@ public class SystemSettings extends SettingsPreferenceFragment implements
                // System dead 
             } 
             return true; 
+        } else if (preference == mNavButtonsHeight) {
+            int statusNavButtonsHeight = Integer.valueOf((String) objValue);
+            int index = mNavButtonsHeight.findIndexOfValue((String) objValue);
+            Settings.System.putInt(getActivity().getApplicationContext().getContentResolver(),
+                    Settings.System.NAV_BUTTONS_HEIGHT, statusNavButtonsHeight);
+            mNavButtonsHeight.setSummary(mNavButtonsHeight.getEntries()[index]);
+            return true;
         }
 
         return false;
@@ -314,7 +333,7 @@ public class SystemSettings extends SettingsPreferenceFragment implements
         }
     }
 
-	
+
     private void updateExpandedDesktop(int value) {
         ContentResolver cr = getContentResolver();
         Resources res = getResources();

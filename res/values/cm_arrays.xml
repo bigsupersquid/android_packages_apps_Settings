@@ -14,6 +14,27 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!--- Nav buttons height -->
+    <string-array name="nav_buttons_height_entries" translatable="false">
+        <item>@string/navigation_bar_height_48</item>
+        <item>@string/navigation_bar_height_44</item>
+        <item>@string/navigation_bar_height_40</item>
+        <item>@string/navigation_bar_height_36</item>
+        <item>@string/navigation_bar_height_32</item>
+        <item>@string/navigation_bar_height_28</item>
+        <item>@string/navigation_bar_height_24</item>
+    </string-array>
+
+    <string-array name="nav_buttons_height_values" translatable="false">
+        <item>48</item>
+        <item>44</item>
+        <item>40</item>
+        <item>36</item>
+        <item>32</item>
+        <item>28</item>
+        <item>24</item>
+    </string-array>
+
     <!-- Wi-Fi settings. Presented as a list dialog to the user to choose the Wi-Fi region code. -->
     <string-array name="wifi_countrycode_entries">
         <item>United States</item>
@@ -213,10 +234,32 @@
         <item>Enable</item>
     </string-array>
 
+    <!-- Profile 2G-3G mode options. -->
+    <string-array name="profile_networkmode_entries" translatable="false">
+        <item>@string/profile_networkmode_2g</item>
+        <item>@string/profile_networkmode_3g</item>
+        <item>@string/profile_networkmode_2g3g</item>
+    </string-array>
+
     <!-- Values for profile connections. Do not translate. -->
     <string-array name="profile_connection_values" translatable="false">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <!--  Values for profile Wi-Fi triggers -->
+    <string-array name="profile_trigger_wifi_options" translatable="false">
+        <item>@string/profile_trigger_connect</item>
+        <item>@string/profile_trigger_disconnect</item>
+        <item>@string/profile_trigger_notrigger</item>
+    </string-array>
+
+    <!--  Values for profile trigger types -->
+    <string-array name="profile_trigger_filters" translatable="false">
+        <item>@string/profile_trigger_filter_all</item>
+        <item>@string/profile_trigger_filter_wifi</item>
+        <item>@string/profile_trigger_filter_bluetooth</item>
     </string-array>
 
     <!-- Profile lock mode options. Do not translate. -->
