@@ -856,9 +856,9 @@ public class BatteryStatsHelper {
                 Parcel parcel = Parcel.obtain();
                 parcel.unmarshall(data, 0, data.length);
                 parcel.setDataPosition(0);
-                mDockStats = com.android.internal.os.DockBatteryStatsImpl.CREATOR
-                        .createFromParcel(parcel);
-                mDockStats.distributeWorkLocked(BatteryStats.STATS_SINCE_CHARGED);
+//                mDockStats = com.android.internal.os.DockBatteryStatsImpl.CREATOR
+//                        .createFromParcel(parcel);
+//                mDockStats.distributeWorkLocked(BatteryStats.STATS_SINCE_CHARGED);
             } catch (RemoteException e) {
                 Log.e(TAG, "RemoteException:", e);
             }
