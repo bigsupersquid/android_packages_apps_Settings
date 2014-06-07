@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="wifi_countrycode_entries">
     <item>美国</item>
     <item>加拿大，台湾</item>
@@ -41,11 +41,6 @@
   <string-array name="entries_screentimeout_widget">
     <item>15 秒 | 1 分钟 | 5 分钟</item>
     <item>30 秒 | 2 分钟 | 5 分钟</item>
-  </string-array>
-  <string-array name="data_usage_cycle_length">
-    <item>每天一次</item>
-    <item>每周一次</item>
-    <item>每月一次</item>
   </string-array>
   <string-array name="data_usage_cycle_weekdays">
     <item>周日</item>

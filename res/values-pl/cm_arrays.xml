@@ -15,7 +15,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string-array name="wifi_countrycode_entries">
     <item>Stany Zjednoczone</item>
     <item>Kanada, Tajwan</item>
@@ -41,11 +41,6 @@
   <string-array name="entries_screentimeout_widget">
     <item>15 sek. | 1 min. | 5 min.</item>
     <item>30 sek. | 2 min. | 5 min.</item>
-  </string-array>
-  <string-array name="data_usage_cycle_length">
-    <item>Raz dziennie</item>
-    <item>Co tydzień</item>
-    <item>Raz w miesiącu</item>
   </string-array>
   <string-array name="data_usage_cycle_weekdays">
     <item>Niedziela</item>
